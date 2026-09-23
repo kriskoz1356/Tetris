@@ -26,6 +26,9 @@ void Game::processEvents()
                     currentPiece.move({ 0,1 });
                 }
             }
+            if (key->scancode == sf::Keyboard::Scancode::Enter) {
+                lockPiece();
+            }
         }
     }
 }
@@ -40,7 +43,9 @@ void Game::update(float dt) {
         }
         else {
             lockPiece();
-            currentPiece = Tetromino(randomize.getRandomType());
+            board.clearFullLines();
+            // currentPiece = Tetromino(randomize.getRandomType());
+            currentPiece = Tetromino(TetrominoType::O);
         }
     }
 }
@@ -48,11 +53,28 @@ void Game::update(float dt) {
 void Game::render()
 {
     window.clear(sf::Color(30, 30, 30));
-    sf::RectangleShape cell({ 30.f,30.f });
+    sf::RectangleShape gridLine;
+    gridLine.setFillColor(sf::Color(60, 60, 60));
 
+    sf::RectangleShape cell({ 30.f,30.f });
     cell.setFillColor(sf::Color::White);
 
-    // Plansza 
+
+    // Grid
+    for (int x = 0; x < Board::Width; ++x) {
+        gridLine.setPosition({ x * 32.f,0.f });
+        gridLine.setSize({ 2.f,Board::Height * 32.f });
+        window.draw(gridLine);
+    }
+
+    for (int y = 0; y < Board::Height; ++y) {
+        gridLine.setPosition({ 0.f,y * 32.f });
+        gridLine.setSize({ Board::Width * 32.f, 2.f });
+        window.draw(gridLine);
+    }
+
+
+    // Board 
     for (int y = 0; y < Board::Height; ++y) {
         for (int x = 0; x < Board::Width; ++x) {
             if (board.get(x, y) == Cell::Filled) {

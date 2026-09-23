@@ -17,4 +17,6 @@ public:
     void clear();
     Cell get(int x, int y) const;
     void set(int x, int y, Cell value);
+
+    int clearFullLines();
 };
