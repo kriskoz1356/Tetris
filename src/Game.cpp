@@ -40,7 +40,7 @@ void Game::update(float dt) {
         }
         else {
             lockPiece();
-            currentPiece = Tetromino{ TetrominoType::I };
+            currentPiece = Tetromino(randomize.getRandomType());
         }
     }
 }
@@ -113,11 +113,7 @@ void Game::lockPiece() {
     }
 }
 
-// TetrominoType Game::randomTetrominoType() {
-//     return TetrominoType();
-// }
-
-Game::Game() : window(sf::VideoMode({ 640,700 }), "Tetris"), currentPiece(TetrominoType::O) {
+Game::Game() : window(sf::VideoMode({ 640,700 }), "Tetris"), currentPiece(randomize.getRandomType()) {
     window.setFramerateLimit(60);
 };
 

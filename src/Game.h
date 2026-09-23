@@ -1,12 +1,14 @@
 #pragma once
 #include "Board.h"
 #include "Tetromino.h"
+#include "Randomize.h"
 #include <SFML/Graphics.hpp>
 
 class Game {
 private:
     sf::RenderWindow window;
     Board board;
+    Randomize randomize;
     Tetromino currentPiece;
 
     float fallTimer = 0.f;
@@ -18,8 +20,6 @@ private:
 
     bool canMove(const sf::Vector2i& offset) const;
     void lockPiece();
-
-    // TetrominoType randomTetrominoType();
 public:
     Game();
     void run();
