@@ -10,9 +10,12 @@ private:
     Board board;
     Randomize randomize;
     Tetromino currentPiece;
+    sf::Font font;
+    sf::Text scoreText;
 
     float fallTimer = 0.f;
     float fallDelay = 0.5f;
+    int score = 0;
 
     void processEvents();
     void update(float dt);

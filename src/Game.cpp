@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <stdexcept>
 
 void Game::processEvents()
 {
@@ -26,6 +27,12 @@ void Game::processEvents()
                     currentPiece.move({ 0,1 });
                 }
             }
+            if (key->scancode == sf::Keyboard::Scancode::Up) {
+                currentPiece.rotate();
+                if(!canMove({ 0,0 })) {
+                    currentPiece.rotateBack();
+                }
+            }
             if (key->scancode == sf::Keyboard::Scancode::Enter) {
                 lockPiece();
             }
@@ -43,9 +50,9 @@ void Game::update(float dt) {
         }
         else {
             lockPiece();
-            board.clearFullLines();
-            // currentPiece = Tetromino(randomize.getRandomType());
-            currentPiece = Tetromino(TetrominoType::O);
+            score += board.clearFullLines();
+            currentPiece = Tetromino(randomize.getRandomType());
+            // currentPiece = Tetromino(TetrominoType::O);
         }
     }
 }
@@ -95,6 +102,12 @@ void Game::render()
             });
         window.draw(cell);
     }
+
+
+    // Score
+    scoreText.setString("Score: " + std::to_string(score));
+    window.draw(scoreText);
+
     window.display();
 }
 
@@ -135,8 +148,16 @@ void Game::lockPiece() {
     }
 }
 
-Game::Game() : window(sf::VideoMode({ 640,700 }), "Tetris"), currentPiece(randomize.getRandomType()) {
+Game::Game() : window(sf::VideoMode({ 640,700 }), "Tetris"), currentPiece(randomize.getRandomType()), scoreText(font) {
     window.setFramerateLimit(60);
+
+    // Font 
+    if(!font.openFromFile("assets/fonts/PressStart2P-Regular.ttf")){
+        throw std::runtime_error("Cannot open font file!");
+    }
+    scoreText.setCharacterSize(24);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition({350.f, 50.f});
 };
 
 void Game::run() {
