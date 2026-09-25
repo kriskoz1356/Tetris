@@ -9,4 +9,5 @@ private:
 public:
     Randomize();
     TetrominoType getRandomType();
+    int getInt(int min, int max);
 };

@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <stdexcept>
+#include <iostream>
 
 void Game::processEvents()
 {
@@ -33,14 +34,23 @@ void Game::processEvents()
                     currentPiece.rotateBack();
                 }
             }
-            if (key->scancode == sf::Keyboard::Scancode::Enter) {
+            if (key->scancode == sf::Keyboard::Scancode::Space || key->scancode == sf::Keyboard::Scancode::Enter) {
+                while(canMove({0,1})){
+                    currentPiece.move({0, 1});
+                }
                 lockPiece();
+                score += board.clearFullLines();
+                spawnPiece();
             }
         }
     }
 }
 
 void Game::update(float dt) {
+    if(gameOver){
+        return;
+    }
+
     fallTimer += dt;
 
     if (fallTimer >= fallDelay) {
@@ -51,7 +61,7 @@ void Game::update(float dt) {
         else {
             lockPiece();
             score += board.clearFullLines();
-            currentPiece = Tetromino(randomize.getRandomType());
+            spawnPiece();
             // currentPiece = Tetromino(TetrominoType::O);
         }
     }
@@ -92,7 +102,20 @@ void Game::render()
         }
     }
 
-    const auto& blocks = currentPiece.getBlocks();
+    // Ghost Piece
+    sf::RectangleShape ghostCell({30.f, 30.f});
+    ghostCell.setFillColor(sf::Color(100, 100, 100));
+
+    const auto ghostPosition = getGhostPosition();
+
+    for (const auto& block : currentPiece.getBlocks()){
+        ghostCell.setPosition({(ghostPosition.x + block.x) * 32.f,
+                               (ghostPosition.y + block.y) * 32.f});
+        window.draw(ghostCell);
+    }
+
+    // Piece
+    const auto &blocks = currentPiece.getBlocks();
     const auto position = currentPiece.getPosition();
 
     for (const auto& block : blocks) {
@@ -146,6 +169,40 @@ void Game::lockPiece() {
 
         board.set(x, y, Cell::Filled);
     }
+}
+
+void Game::spawnPiece() {
+    currentPiece = TetrominoType(randomize.getRandomType());
+    int startX = randomize.getInt(0, Board::Width - 4);
+    currentPiece.setPosition({startX, 0});
+
+    if(!canMove({0,0})){
+        gameOver = true;
+        std::cout << "GEJ OVER" << std::endl;
+    }
+}
+
+sf::Vector2i Game::getGhostPosition() const {
+    sf::Vector2i ghostPosition = currentPiece.getPosition();
+
+    while(true){
+        bool canFall = true;
+
+        for(const auto& block : currentPiece.getBlocks()){
+            int x = ghostPosition.x + block.x;
+            int y = ghostPosition.y + block.y + 1;
+
+            if(x < 0 || x >= Board::Width || y < 0 || y >= Board::Height || board.get(x,y) == Cell::Filled){
+                canFall = false;
+                break;
+            }
+        }
+        if(!canFall){
+            break;
+        }
+        ++ghostPosition.y;
+    }
+    return ghostPosition;
 }
 
 Game::Game() : window(sf::VideoMode({ 640,700 }), "Tetris"), currentPiece(randomize.getRandomType()), scoreText(font) {

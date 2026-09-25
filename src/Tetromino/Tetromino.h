@@ -25,4 +25,5 @@ public:
     void move(sf::Vector2i offset);
     void rotate();
     void rotateBack();
+    void setPosition(sf::Vector2i position);
 };

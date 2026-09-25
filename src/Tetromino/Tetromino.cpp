@@ -117,3 +117,7 @@ void Tetromino::rotateBack() {
         }
     }
 }
+
+void Tetromino::setPosition(sf::Vector2i position) {
+    this->position = position;
+}

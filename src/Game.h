@@ -13,6 +13,7 @@ private:
     sf::Font font;
     sf::Text scoreText;
 
+    bool gameOver = false;
     float fallTimer = 0.f;
     float fallDelay = 0.5f;
     int score = 0;
@@ -23,6 +24,10 @@ private:
 
     bool canMove(const sf::Vector2i& offset) const;
     void lockPiece();
+    void spawnPiece();
+
+    sf::Vector2i getGhostPosition() const;
+
 public:
     Game();
     void run();
