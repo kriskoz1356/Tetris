@@ -26,6 +26,8 @@ private:
     void lockPiece();
     void spawnPiece();
 
+    void restart();
+
     sf::Vector2i getGhostPosition() const;
 
 public:

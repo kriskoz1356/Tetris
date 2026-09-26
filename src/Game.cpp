@@ -34,13 +34,16 @@ void Game::processEvents()
                     currentPiece.rotateBack();
                 }
             }
-            if (key->scancode == sf::Keyboard::Scancode::Space || key->scancode == sf::Keyboard::Scancode::Enter) {
+            if (key->scancode == sf::Keyboard::Scancode::Enter) {
                 while(canMove({0,1})){
                     currentPiece.move({0, 1});
                 }
                 lockPiece();
                 score += board.clearFullLines();
                 spawnPiece();
+            }
+            if(key->scancode == sf::Keyboard::Scancode::Space){
+                restart();
             }
         }
     }
@@ -180,6 +183,13 @@ void Game::spawnPiece() {
         gameOver = true;
         std::cout << "GEJ OVER" << std::endl;
     }
+}
+
+void Game::restart() {
+    board.clear();
+    score = 0;
+    gameOver = false;
+    spawnPiece();
 }
 
 sf::Vector2i Game::getGhostPosition() const {
