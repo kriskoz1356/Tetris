@@ -181,7 +181,7 @@ void Game::spawnPiece() {
 
     if(!canMove({0,0})){
         gameOver = true;
-        std::cout << "GEJ OVER" << std::endl;
+        std::cout << "GAME OVER" << std::endl;
     }
 }
 
